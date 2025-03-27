@@ -17,6 +17,9 @@ jobs:
       matrix:
         java: [ '17' ]
 
+    env:
+      IMAGE_TAG: ${{ github.ref_type == 'tag' && github.ref_name || github.sha }}
+
     steps:
       - uses: actions/checkout@v4
       - name: Set up JDK ${{matrix.java}}
