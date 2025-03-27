@@ -25,5 +25,21 @@ jobs:
           java-version: ${{matrix.java}}
           distribution: 'adopt'
           cache: maven
-      - name: Build with Maven Wrapper
-        run: ./mvnw -B verify
+
+      - name: Grant execute permission for Maven wrapper
+        run: chmod +x mvnw
+ 
+      - name: Build and test with Maven Wrapper
+        run: ./mvnw clean verify
+ 
+      - name: SonarQube Analysis
+        run: ./mvnw sonar:sonar -Dsonar.projectKey=petclinic \
+          -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }} \
+          -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+ 
+      # This step is optional but shows how you might create an artifact to be used later
+      - name: Archive production jar
+        uses: actions/upload-artifact@v3
+        with:
+          name: spring-petclinic-jar
+          path: target/spring-petclinic-*.jar
