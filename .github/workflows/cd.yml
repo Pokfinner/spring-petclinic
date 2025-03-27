@@ -4,11 +4,10 @@
 name: Java CD with Maven
 
 on:
-  workflow_dispatch:
-#   workflow_run:
-#     workflows: ["Java CI with Maven"]
-#     types:
-#         - completed
+  workflow_run:
+    workflows: ["Java CI with Maven"]
+    types:
+        - completed
 
 jobs:
   deploy:
