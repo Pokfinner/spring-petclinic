@@ -17,9 +17,6 @@ jobs:
       matrix:
         java: [ '17' ]
 
-    env:
-      IMAGE_TAG: ${{ github.ref_type == 'tag' && github.ref_name || github.sha }}
-
     steps:
       - uses: actions/checkout@v4
       - name: Set up JDK ${{matrix.java}}
@@ -39,10 +36,10 @@ jobs:
         run: ./mvnw sonar:sonar -Dsonar.projectKey=Spring-PetClinic \
           -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }} \
           -Dsonar.login=${{ secrets.SONAR_TOKEN }}
- 
+
       # This step is optional but shows how you might create an artifact to be used later
       - name: Archive production jar
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: spring-petclinic-jar
           path: target/spring-petclinic-*.jar
