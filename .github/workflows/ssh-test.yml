@@ -1,8 +1,8 @@
 name: SSH Test!
 
 on:
-  push:
-    branches: [ main ]
+  # push:
+  #   branches: [ main ]
   workflow_dispatch:
 
 jobs:
@@ -20,10 +20,10 @@ jobs:
           with:
             ssh-private-key: ${{ secrets.EC2_PRIVATE_KEY }}
 
-        - run: echo "cool" > diogo
 
-        - name: Copy diogo to EC2
-          run: scp -o StrictHostKeyChecking=no diogo ubuntu@${{ secrets.EC2_HOST }}:/home/ubuntu/
-
-        - name: print diogo from ec2
-          run: ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} "cat diogo"
+        - name: Remove any existing app (Kill process on port 8080 on remote host)
+          run: ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} "fuser -k 8080/tcp || true"
+    
+        - name: Start Spring PetClinic # this runs in detached mode, you have to verify if it's running in the server.
+          run: ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} "nohup java -jar /home/ubuntu/spring-petclinic-*.jar > /dev/null 2>&1 & exit 0"
+          
