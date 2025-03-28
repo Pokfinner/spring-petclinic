@@ -25,5 +25,5 @@ jobs:
           run: ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} "fuser -k 8080/tcp || true"
     
         - name: Start Spring PetClinic # this runs in detached mode, you have to verify if it's running in the server.
-          run: ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} "nohup java -jar /home/ubuntu/spring-petclinic-*.jar > /dev/null 2>&1 & exit 0"
-          
+          run: ssh -n -f -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} "\
+            nohup java -jar /home/ubuntu/spring-petclinic-*.jar > /dev/null 2>&1 &"
