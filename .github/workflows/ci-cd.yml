@@ -64,11 +64,12 @@ jobs:
         with:
             ssh-private-key: ${{ secrets.EC2_PRIVATE_KEY }}
 
- 
+      - name: Remove any existing app (Kill process on port 8080 on remote host)
+        run: ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} "fuser -k 8080/tcp || true"
+
       - name: Copy JAR to EC2
         run: scp -o StrictHostKeyChecking=no target/spring-petclinic-*.jar ubuntu@${{ secrets.EC2_HOST }}:/home/ubuntu/
  
       - name: Start Spring PetClinic # this runs in detached mode, you have to verify if it's running in the server.
-        run: ssh -n -f -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} "\
-          nohup java -jar /home/ubuntu/spring-petclinic-*.jar > /dev/null 2>&1 &"
+        run: ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} "nohup java -jar /home/ubuntu/spring-petclinic-*.jar > /dev/null 2>&1 & exit 0"
       
